@@ -19,7 +19,7 @@ class IPForm extends React.Component {
             device1: [],
             device2: [],
             devices: ["device1", "device2"],
-            vrfname: []
+            vrfname: [],
         }
         this.apiConnector = new ApiConnector();
     }
@@ -80,8 +80,37 @@ class IPForm extends React.Component {
         this.anyEntryChanged();
     }
 
+    showSnack(success){
+        let message = "";
+        if(success) {
+            message = "Form is valid!";
+        } else {
+            message = 'Invalid form data, Please check the values';
+        }
+        var notification = document.querySelector('.mdl-js-snackbar');
+        var data = {
+            message: message,
+            actionHandler: function(event) {},
+            actionText: 'OK',
+            timeout: null
+        };
+        notification.MaterialSnackbar.showSnackbar(data);
+    }
+
     validateForm() {
-        this.setState({ submit_disable: false });
+        let projectname = document.getElementById("projectname").value;
+        let projectid = document.getElementById("projectid").value;
+        let vrfname_selected = document.getElementById("vrname").value;
+        let data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
+        if(data && data.valid) {
+            this.setState((prevState, props) => {
+                prevState.submit_disable = false;
+                return prevState
+            });
+                this.showSnack(true);
+            } else {
+                this.showSnack(false);
+            }
     }
     render() {
         return (
@@ -114,19 +143,19 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <InputText id="projectname" text="Project Name*" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
+                                            <InputText id="projectname" text="Project Name*" key="projectname" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <InputText id="projectid" text="Project ID*" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
+                                            <InputText id="projectid" text="Project ID*" key="projectid" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <DropDown id="vrname" name="vrname" title="VRF Name" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="vrname" name="vrname" title="VRF Name" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
@@ -139,12 +168,12 @@ class IPForm extends React.Component {
                                 <div className="mdl-card__actions">
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--3-col">
-                                            <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)}>
+                                            <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)} type="button">
                                                 Validate
                                     </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
-                                            <button className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable}>
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable}>
                                                 Submit
                                     </button>
                                         </div>
@@ -152,7 +181,12 @@ class IPForm extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="mdl-cell mdl-cell--1-col"></div>
+                        <div className="mdl-cell mdl-cell--1-col">
+                        <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+                            <div class="mdl-snackbar__text"></div>
+                            <button class="mdl-snackbar__action" type="button"></button>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>

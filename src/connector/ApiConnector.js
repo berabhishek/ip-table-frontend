@@ -3,7 +3,7 @@ import $ from "jquery";
 class ApiConnector {
     constructor(props) {
         this.state = {
-            "url": "http://127.0.0.1:27017",
+            "url": "http://localhost:27017",
         }
     }
 
