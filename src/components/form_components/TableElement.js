@@ -19,10 +19,10 @@ class TableElement extends React.Component {
   <tbody>
     <tr>
       <td>
-        <DropDown id="device1_1" name="device1_1" title="" values={["SCR1"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device1_1" name="device1_1" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <DropDown id="device2_1" name="device2_1" title="" values={["PE"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device2_1" name="device2_1" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
         <InputText limitedwidth id="vlan_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
@@ -36,10 +36,10 @@ class TableElement extends React.Component {
     </tr>
     <tr>
       <td>
-        <DropDown id="device1_2" name="device1_2" title="" values={["SCR1"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device1_2" name="device1_2" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <DropDown id="device2_2" name="device2_2" title="" values={["PE"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device2_2" name="device2_2" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
         <InputText limitedwidth id="vlan_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
@@ -53,10 +53,10 @@ class TableElement extends React.Component {
     </tr>
     <tr>
       <td>
-        <DropDown id="device1_3" name="device1_3" title="" values={["SCR1"]}anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device1_3" name="device1_3" title="" values={this.props.device1}anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <DropDown id="device2_3" name="device2_3" title="" values={["PE"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device2_3" name="device2_3" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
         <InputText limitedwidth id="vlan_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
@@ -70,10 +70,10 @@ class TableElement extends React.Component {
     </tr>
     <tr>
       <td>
-        <DropDown id="device1_4" name="device1_4" title="" values={["SCR1"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device1_4" name="device1_4" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <DropDown id="device2_4" name="device2_4" title="" values={["PE"]} anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="device2_4" name="device2_4" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
         <InputText limitedwidth id="vlan_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>

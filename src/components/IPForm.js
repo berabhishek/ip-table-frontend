@@ -15,14 +15,16 @@ class IPForm extends React.Component {
             selected_state: "",
             office: [""],
             selected_office: "",
-            connectiontype: []
+            connectiontype: [],
+            device1: [],
+            device2: [],
+            devices: ["device1", "device2"]
         }
         this.apiConnector = new ApiConnector();
     }
     componentDidMount() {
         this.setState((prevState, props) => {
             let data = this.apiConnector.fetchData("/formhelper/connectiontype");
-            console.log(data);
             if (data && data.connectiontype) {
                 data.connectiontype.unshift("");
                 prevState.connectiontype = data.connectiontype;
@@ -60,6 +62,20 @@ class IPForm extends React.Component {
         this.anyEntryChanged();
     }
 
+    updateDevices(name) {
+        this.setState((prevState, props) => {
+            this.state.devices.forEach(device => {
+                let data = this.apiConnector.fetchData(`/formhelper/device/${device}/${name}`);
+                if (data && data.name) {
+                    data.name.unshift("");
+                    prevState[device] = data.name;
+                }
+                return prevState;
+            });
+        });
+        this.anyEntryChanged();
+    }
+
     validateForm() {
         this.setState({ submit_disable: false });
     }
@@ -89,7 +105,7 @@ class IPForm extends React.Component {
                                             <DropDown id="facility" name="facility" title="Facility" values={this.state.office} anyEntryChanged={this.anyEntryChanged.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connectiontype} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connectiontype} anyEntryChanged={this.updateDevices.bind(this)} />
                                         </div>
                                     </div>
                                     <div className="mdl-grid">
@@ -106,13 +122,13 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <DropDown id="vrname" name="vrname" title="VR Name Type" values={["GDN:ABC"]} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="vrname" name="vrname" title="VRF Name" values={["GDN:ABC"]} anyEntryChanged={this.anyEntryChanged.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--12-col">
-                                            <TableElement headers={["Device 1", "Device 2", "VLAN", "Subnet", "Enter Value"]} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <TableElement headers={["Device 1", "Device 2", "VLAN", "Subnet", "Enter Value"]} device1={this.state.device1} device2={this.state.device2} anyEntryChanged={this.anyEntryChanged.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
