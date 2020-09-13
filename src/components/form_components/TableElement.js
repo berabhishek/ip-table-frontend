@@ -6,7 +6,7 @@ class TableElement extends React.Component {
 
         return (
             <div>
-                <table class="mdl-data-table mdl-js-data-table full-width mdl-shadow--2dp">
+                <table class="mdl-data-table mdl-js-data-table full-width">
   <thead>
     <tr>
           {this.props.headers.map((header)=> {
@@ -31,7 +31,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <InputText limitedwidth id="entervalue_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="entervalue_1" name="entervalue_1" title="" values={["/29", "/30"]} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
     </tr>
     <tr>
@@ -48,7 +48,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <InputText limitedwidth id="entervalue_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="entervalue_2" name="entervalue_2" title="" values={["/29", "/30"]} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
     </tr>
     <tr>
@@ -65,7 +65,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <InputText limitedwidth id="entervalue_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="entervalue_3" name="entervalue_3" title="" values={["/29", "/30"]} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
     </tr>
     <tr>
@@ -82,7 +82,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
       <td>
-        <InputText limitedwidth id="entervalue_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        <DropDown id="entervalue_4" name="entervalue_4" title="" values={["/29", "/30"]} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
     </tr>
   </tbody>
