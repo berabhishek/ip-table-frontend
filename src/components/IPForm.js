@@ -18,18 +18,22 @@ class IPForm extends React.Component {
             connectiontype: [],
             device1: [],
             device2: [],
-            devices: ["device1", "device2"]
+            devices: ["device1", "device2"],
+            vrfname: []
         }
         this.apiConnector = new ApiConnector();
     }
     componentDidMount() {
-        this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData("/formhelper/connectiontype");
-            if (data && data.connectiontype) {
-                data.connectiontype.unshift("");
-                prevState.connectiontype = data.connectiontype;
-            }
-            return prevState;
+        let keys = ["connectiontype", "vrfname"];
+        keys.forEach(key => {
+                this.setState((prevState, props) => {
+                let data = this.apiConnector.fetchData(`/formhelper/${key}`);
+                if (data && data[key]) {
+                    data[key].unshift("");
+                    prevState[key] = data[key];
+                }
+                return prevState;
+            });
         });
     }
     anyEntryChanged() {
@@ -122,7 +126,7 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <DropDown id="vrname" name="vrname" title="VRF Name" values={["GDN:ABC"]} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="vrname" name="vrname" title="VRF Name" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
