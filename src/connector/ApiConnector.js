@@ -19,8 +19,22 @@ class ApiConnector {
         return data.responseJSON;
     }
 
-    setData() {
-
+    setData(extension, data) {
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": this.state.url+extension,
+            "method": "POST",
+            "headers": {
+              "content-type": "application/json",
+            },
+            "processData": false,
+            "data": JSON.stringify(data)
+          }
+          
+          $.ajax(settings).done(function (response) {
+            window.location = "/output/"+response.id;
+          });
     }
 }
 export default ApiConnector;

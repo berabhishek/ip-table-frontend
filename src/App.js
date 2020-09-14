@@ -14,7 +14,7 @@ function App() {
       <Header title="IP Demo"/>
       <BrowserRouter>
             <Switch>
-              <Route path="/output" component={OutputView} />
+              <Route path="/output/:id" component={(props) => <OutputView {...props}/>} />
               <Route path="/" component={() => <IPForm title="Input Data - PD VRF Extension on Shared Infrastructure"/>} />
             </Switch>
             </BrowserRouter>

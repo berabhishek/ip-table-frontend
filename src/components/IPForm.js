@@ -100,7 +100,7 @@ class IPForm extends React.Component {
     validateForm() {
         let projectname = document.getElementById("projectname").value;
         let projectid = document.getElementById("projectid").value;
-        let vrfname_selected = document.getElementById("vrname").value;
+        let vrfname_selected = document.getElementById("vrfname").value;
         let data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
         if(data && data.valid) {
             this.setState((prevState, props) => {
@@ -112,10 +112,51 @@ class IPForm extends React.Component {
                 this.showSnack(false);
             }
     }
+    submitForm() {
+        let data = {};
+        let idlist = [
+            "region",
+            "country",
+            "facility",
+            "city",
+            "connectivitytype",
+            "projectname",
+            "projectid",
+            "vrfname",
+            "device1_1",
+            "device2_1",
+            "vlan_1",
+            "subnet_1",
+            "entervalue_1",
+            "device1_2",
+            "device2_2",
+            "vlan_2",
+            "subnet_2",
+            "entervalue_2",
+            "device1_3",
+            "device2_3",
+            "vlan_3",
+            "subnet_3",
+            "entervalue_3",
+            "device1_4",
+            "device2_4",
+            "vlan_4",
+            "subnet_4",
+            "entervalue_4"
+        ];
+        idlist.forEach((id) => {
+            try{
+                data[id] = document.getElementById(id).value;
+            } catch(err) {
+                debugger;
+            }
+        });
+        this.apiConnector.setData("/formhelper/setipdata", data);
+    }
     render() {
         return (
             <div>
-                <form>
+                <form id="ipform">
                     <div className="mdl-grid">
                         <div className="mdl-cell mdl-cell--1-col"></div>
                         <div className="mdl-cell mdl-cell--10-col">
@@ -155,7 +196,7 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <DropDown id="vrname" name="vrname" title="VRF Name" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="vrfname" name="vrfname" title="VRF Name" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
@@ -173,7 +214,7 @@ class IPForm extends React.Component {
                                     </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
-                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable}>
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>
                                                 Submit
                                     </button>
                                         </div>
