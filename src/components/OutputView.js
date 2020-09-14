@@ -19,7 +19,7 @@ class OutputView extends React.Component {
     }
 
     render() {
-        console.log(this.props);
+        console.log(this.state.data);
         return (
             <div>
                 <div className="mdl-grid">
@@ -92,52 +92,75 @@ class OutputView extends React.Component {
                                     </thead>
                                     <tbody>
                                         <tr>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
+                                            <td>
+                                                {this.state.data.connect1data.device1}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect1data.device2}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect1data.vlan}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect1data.subnet}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect1data.entervalue}
+                                            </td>
                                         </tr>
+                                        
                                         <tr>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
+                                            <td>
+                                                {this.state.data.connect2data.device1}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect2data.device2}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect2data.vlan}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect2data.subnet}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect2data.entervalue}
+                                            </td>
                                         </tr>
+
                                         <tr>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
+                                            <td>
+                                                {this.state.data.connect3data.device1}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect3data.device2}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect3data.vlan}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect3data.subnet}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect3data.entervalue}
+                                            </td>
                                         </tr>
+
                                         <tr>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
-                                        <td>
-                                        </td>
+                                            <td>
+                                                {this.state.data.connect4data.device1}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect4data.device2}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect4data.vlan}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect4data.subnet}
+                                            </td>
+                                            <td>
+                                                {this.state.data.connect4data.entervalue}
+                                            </td>
                                         </tr>
                                     </tbody>
                                     </table>
