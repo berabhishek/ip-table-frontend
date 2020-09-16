@@ -10,6 +10,7 @@ class TableElement extends React.Component {
   <thead>
     <tr>
           {this.props.headers.map((header)=> {
+              if(!(this.props.device1 && this.props.device1.length <= 1 && header === "VLAN") )
               return (
                 <th>{header}</th>
               )
@@ -19,14 +20,21 @@ class TableElement extends React.Component {
   <tbody>
     <tr>
       <td>
+        {this.props.device1.length > 1 ? 
         <DropDown id="device1_1" name="device1_1" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
+          :
+        <InputText limitedwidth id="device1_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+      } 
       </td>
       <td>
         <DropDown id="device2_1" name="device2_1" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
+      {this.props.device1.length > 1 ? 
       <td>
-        <InputText limitedwidth id="vlan_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+          <InputText limitedwidth id="vlan_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        </td>
+        : ''
+        }
       <td>
         <InputText limitedwidth id="subnet_1" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
@@ -36,14 +44,21 @@ class TableElement extends React.Component {
     </tr>
     <tr>
       <td>
+      {this.props.device1.length > 1 ? 
         <DropDown id="device1_2" name="device1_2" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+          :
+        <InputText limitedwidth id="device1_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+      } 
+       </td>
       <td>
         <DropDown id="device2_2" name="device2_2" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
+      {this.props.device1.length > 1 ? 
       <td>
-        <InputText limitedwidth id="vlan_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+          <InputText limitedwidth id="vlan_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        </td>
+        : ''
+        }
       <td>
         <InputText limitedwidth id="subnet_2" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
@@ -53,14 +68,21 @@ class TableElement extends React.Component {
     </tr>
     <tr>
       <td>
-        <DropDown id="device1_3" name="device1_3" title="" values={this.props.device1}anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+      {this.props.device1.length > 1 ? 
+        <DropDown id="device1_3" name="device1_3" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
+          :
+        <InputText limitedwidth id="device1_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+      } 
+         </td>
       <td>
         <DropDown id="device2_3" name="device2_3" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
+      {this.props.device1.length > 1 ? 
       <td>
-        <InputText limitedwidth id="vlan_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+          <InputText limitedwidth id="vlan_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        </td>
+        : ''
+        }
       <td>
         <InputText limitedwidth id="subnet_3" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
@@ -70,14 +92,21 @@ class TableElement extends React.Component {
     </tr>
     <tr>
       <td>
+      {this.props.device1.length > 1 ? 
         <DropDown id="device1_4" name="device1_4" title="" values={this.props.device1} anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+          :
+        <InputText limitedwidth id="device1_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+      } 
+        </td>
       <td>
         <DropDown id="device2_4" name="device2_4" title="" values={this.props.device2} anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
+      {this.props.device1.length > 1 ? 
       <td>
-        <InputText limitedwidth id="vlan_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>
-      </td>
+          <InputText limitedwidth id="vlan_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>
+        </td>
+        : ''
+        }
       <td>
         <InputText limitedwidth id="subnet_4" text="" anyEntryChanged={this.props.anyEntryChanged}/>
       </td>
