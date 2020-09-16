@@ -8,17 +8,19 @@ class DropDown extends React.Component {
     render() {
         return (
             <div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <select 
-                        class="mdl-textfield__input" 
+                        className="mdl-textfield__input" 
                         id={this.props.id} 
                         name={this.props.name} 
-                        onChange={(e) => this.props.anyEntryChanged.call(this, e.target.value)}>
+                        onChange={(e) => this.props.anyEntryChanged.call(this, e.target.value)}
+                        required={this.props.required}
+                        >
                         {this.props.values.map((value) => {
                             return <option value={value}>{value}</option>
                         })}
                     </select>
-                    <label class="mdl-textfield__label" for={this.props.id}>{this.props.title}</label>
+                    <label className="mdl-textfield__label" for={this.props.id}>{this.props.title}</label>
                     </div>
             </div>
         )

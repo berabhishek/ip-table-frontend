@@ -198,7 +198,7 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--6-col">
-                                            <DropDown id="vrfname" name="vrfname" title="VRF Name" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="vrfname" name="vrfname" title="VRF Name*" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} required/>
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
