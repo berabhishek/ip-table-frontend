@@ -81,3 +81,17 @@
     position: relative;
     text-align: center;
   }
+
+.less-height {
+  padding-top: 0px;
+  padding-bottom: 30px;
+  height: 50px;
+}
+/* 
+.no-padding {
+  padding: 0px;
+} */
+
+.mdl-data-table td {
+  padding: 0px 12px;
+}

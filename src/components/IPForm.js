@@ -165,17 +165,17 @@ class IPForm extends React.Component {
     render() {
         return (
             <div>
-      <Header title="OffShore Location"/>
+      <Header title="Input Data - PD VRF Extension on Shared Infrastructure"/>
                 <form id="ipform">
                     <div className="mdl-grid">
                         <div className="mdl-cell mdl-cell--1-col"></div>
                         <div className="mdl-cell mdl-cell--10-col">
                             <div className="mdl-card ip-full-width mdl-shadow--2dp">
-                                <div className="mdl-card__title">
+                                {/* <div className="mdl-card__title">
                                     <h2 className="mdl-card__title-text">{this.props.title}</h2>
-                                </div>
+                                </div> */}
                                 <div className="mdl-card__supporting-text ip-full-width no-padding">
-                                    <div className="mdl-grid">
+                                    <div className="mdl-grid less-height">
                                         <div className="mdl-cell mdl-cell--2-col">
                                             <DropDown id="region" name="region" title="Region" values={["APAC", "BPAC"]} anyEntryChanged={this.findOffice.bind(this)} />
                                         </div>
@@ -192,27 +192,22 @@ class IPForm extends React.Component {
                                             <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connectiontype} anyEntryChanged={this.updateDevices.bind(this)} />
                                         </div>
                                     </div>
-                                    <div className="mdl-grid">
-                                        <div className="mdl-cell mdl-cell--6-col">
+                                    <div className="mdl-grid less-height">
+                                        <div className="mdl-cell mdl-cell--4-col">
                                             <InputText id="projectname" text="Project Name*" key="projectname" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
                                         </div>
-                                        <div className="mdl-cell mdl-cell--6-col"></div>
-                                    </div>
-                                    <div className="mdl-grid">
-                                        <div className="mdl-cell mdl-cell--6-col">
+                                        <div className="mdl-cell mdl-cell--4-col">
                                             <InputText id="projectid" text="Project ID*" key="projectid" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
+
                                         </div>
-                                        <div className="mdl-cell mdl-cell--6-col"></div>
-                                    </div>
-                                    <div className="mdl-grid">
-                                        <div className="mdl-cell mdl-cell--6-col">{
-                                            this.props.match.params.existing === "existing" ? 
+                                        <div className="mdl-cell mdl-cell--4-col">
+                                           { this.props.match.params.existing === "existing" ? 
                                             <DropDown id="vrfname" name="vrfname" title="VRF Name*" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} required/> 
                                             :
                                             <InputText id="vrfname" name="vrfname" text="VRF Name*" key="vrfname" anyEntryChanged={this.anyEntryChanged.bind(this)} required/> 
                                         }
+
                                         </div>
-                                        <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--12-col">
