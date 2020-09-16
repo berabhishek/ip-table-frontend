@@ -33,8 +33,7 @@ class Home extends React.Component {
                                         </div>
 
                                 <div className="mdl-grid">
-                                    {/* <div className="mdl-cell mdl-cell--1-col"></div> */}
-                                    <div className="mdl-cell mdl-cell--12-col">
+                                    <div className="mdl-cell mdl-cell--4-col">
 
 
                                     <div className="flip-card">
@@ -61,16 +60,22 @@ class Home extends React.Component {
                                     </div>
                                 
                                     </div>
-                                </div>
-                                <div className="mdl-grid">
-                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >
+                                    <div className="mdl-cell mdl-cell--4-col">
+                                        <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >
                                                 Onshore POP Location
-                                    </button>
+                                        </button>
+                                    </div>
+                                    <div className="mdl-cell mdl-cell--4-col">
+                                        <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >
+                                                    Client Location
+                                        </button>
+                                    </div>
                                 </div>
                                 <div className="mdl-grid">
-                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >
-                                                Client Location
-                                    </button>
+                                
+                                </div>
+                                <div className="mdl-grid">
+                                
                                 </div>
 
 
