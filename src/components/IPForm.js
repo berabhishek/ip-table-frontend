@@ -4,6 +4,7 @@ import DropDown from "./form_components/DropDown";
 import InputText from "./form_components/InputText";
 import TableElement from "./form_components/TableElement";
 import ApiConnector from "../connector/ApiConnector";
+import Header from "./Header";
 class IPForm extends React.Component {
     constructor(props) {
         super(props);
@@ -156,6 +157,7 @@ class IPForm extends React.Component {
     render() {
         return (
             <div>
+      <Header title="OffShore Location"/>
                 <form id="ipform">
                     <div className="mdl-grid">
                         <div className="mdl-cell mdl-cell--1-col"></div>

@@ -6,16 +6,17 @@ import IPForm from './components/IPForm';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
 import OutputView from "./components/OutputView";
+import Home from './components/Home';
 
 
 function App() {
   return (
     <div>
-      <Header title="IP Demo"/>
       <BrowserRouter>
             <Switch>
               <Route path="/output/:id" component={(props) => <OutputView {...props}/>} />
-              <Route path="/" component={() => <IPForm title="Input Data - PD VRF Extension on Shared Infrastructure"/>} />
+              <Route path="/input" component={() => <IPForm title="Input Data - PD VRF Extension on Shared Infrastructure"/>} />
+              <Route path="/" component={() => <Home title="IP Allocation Portal"/>} />
             </Switch>
             </BrowserRouter>
     </div>
