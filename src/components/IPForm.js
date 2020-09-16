@@ -102,11 +102,16 @@ class IPForm extends React.Component {
         let projectname = document.getElementById("projectname").value;
         let projectid = document.getElementById("projectid").value;
         let vrfname_selected = document.getElementById("vrfname").value;
-        let data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
+        let data = {};
+        if(this.props.match.params.existing === "new") {
+            data = this.apiConnector.fetchData(`/formhelper/validateany/${projectname}/${projectid}/${vrfname_selected}`);
+        } else {
+            data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
+        }
         if(data && data.valid) {
             this.setState((prevState, props) => {
                 prevState.submit_disable = false;
-                return prevState
+                return prevState;
             });
                 this.showSnack(true);
             } else {
@@ -149,10 +154,13 @@ class IPForm extends React.Component {
             try{
                 data[id] = document.getElementById(id).value;
             } catch(err) {
-                debugger;
             }
         });
-        this.apiConnector.setData("/formhelper/setipdata", data);
+        if(this.props.match.params.existing === "new") {
+            this.apiConnector.setData("/formhelper/setipdata/new", data);
+        } else {
+            this.apiConnector.setData("/formhelper/setipdata/existing", data);
+        }
     }
     render() {
         return (
@@ -197,8 +205,12 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>
                                     <div className="mdl-grid">
-                                        <div className="mdl-cell mdl-cell--6-col">
-                                            <DropDown id="vrfname" name="vrfname" title="VRF Name*" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} required/>
+                                        <div className="mdl-cell mdl-cell--6-col">{
+                                            this.props.match.params.existing === "existing" ? 
+                                            <DropDown id="vrfname" name="vrfname" title="VRF Name*" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} required/> 
+                                            :
+                                            <InputText id="vrfname" name="vrfname" text="VRF Name*" key="vrfname" anyEntryChanged={this.anyEntryChanged.bind(this)} required/> 
+                                        }
                                         </div>
                                         <div className="mdl-cell mdl-cell--6-col"></div>
                                     </div>

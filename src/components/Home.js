@@ -8,8 +8,9 @@ class Home extends React.Component {
     }
     componentDidMount() {
     }
-    formRedirectPage(){
-        window.location= "/input";
+    formRedirectPage(link){
+        // alert(link);
+        window.location= link;
     }
     render() {
         return (
@@ -32,9 +33,34 @@ class Home extends React.Component {
                                         </div>
 
                                 <div className="mdl-grid">
-                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={this.formRedirectPage.bind(this)} >
-                                                OffShore Location
-                                    </button>
+                                    {/* <div className="mdl-cell mdl-cell--1-col"></div> */}
+                                    <div className="mdl-cell mdl-cell--12-col">
+
+
+                                    <div className="flip-card">
+                                        <div className="flip-card-inner">
+                                            <div className="flip-card-front">
+                                                <div className="container">
+                                                    <img src="offshore.jpg" alt="Avatar" className="img-class"/>
+                                                    <div className="centered">Offshore</div>
+                                                </div>
+                                            </div>
+                                        <div className="flip-card-back mdl-grid">
+                                            <div className="mdl-grid">
+                                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/existing")} >
+                                                    Existing Location
+                                                </button>
+                                            </div>
+                                            <div className="mdl-grid">
+                                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/new")} >
+                                                    New Location
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                
+                                    </div>
                                 </div>
                                 <div className="mdl-grid">
                                 <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >

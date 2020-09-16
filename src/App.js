@@ -15,7 +15,7 @@ function App() {
       <BrowserRouter>
             <Switch>
               <Route path="/output/:id" component={(props) => <OutputView {...props}/>} />
-              <Route path="/input" component={() => <IPForm title="Input Data - PD VRF Extension on Shared Infrastructure"/>} />
+              <Route path="/input/:existing" component={(props) => <IPForm title="Input Data - PD VRF Extension on Shared Infrastructure" {...props}/>} />
               <Route path="/" component={() => <Home title="IP Allocation Portal"/>} />
             </Switch>
             </BrowserRouter>
