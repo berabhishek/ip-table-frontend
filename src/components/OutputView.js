@@ -1,5 +1,6 @@
 import React from "react";
 import ApiConnector from "../connector/ApiConnector";
+import Header from "./Header";
 import "./styles/formstyles.css";
 
 class OutputView extends React.Component {
@@ -22,6 +23,7 @@ class OutputView extends React.Component {
         console.log(this.state.data);
         return (
             <div>
+      <Header title="Output"/>
                 <div className="mdl-grid">
                     <div className="mdl-cell mdl-cell--1-col"></div>
                     <div className="mdl-cell mdl-cell--10-col">
