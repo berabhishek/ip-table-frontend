@@ -29,6 +29,7 @@ class Home extends React.Component {
                         <div className="mdl-cell mdl-cell--4-col">Please Select The Option</div>
                         <div className="mdl-cell mdl-cell--4-col"></div>
                         <div className="mdl-cell mdl-cell--4-col"></div>
+                        <div className="mdl-cell mdl-cell--4-col"></div>
                                         
                                         </div>
 
@@ -41,18 +42,18 @@ class Home extends React.Component {
                                             <div className="flip-card-front">
                                                 <div className="container">
                                                     <img src="offshore.jpg" alt="Avatar" className="img-class"/>
-                                                    <div className="centered">Offshore</div>
+                                                    <div className="centered">OFFSHORE</div>
                                                 </div>
                                             </div>
                                         <div className="flip-card-back mdl-grid">
                                             <div className="mdl-grid">
                                                 <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/existing")} >
-                                                    Existing Location
+                                                    Existing Connection
                                                 </button>
                                             </div>
                                             <div className="mdl-grid">
                                                 <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/new")} >
-                                                    New Location
+                                                    New Connection
                                                 </button>
                                             </div>
                                         </div>
@@ -61,14 +62,54 @@ class Home extends React.Component {
                                 
                                     </div>
                                     <div className="mdl-cell mdl-cell--4-col">
-                                        <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >
-                                                Onshore POP Location
-                                        </button>
+                                        
+                                    <div className="flip-card">
+                                        <div className="flip-card-inner">
+                                            <div className="flip-card-front">
+                                                <div className="container">
+                                                    <img src="clientreal.jpg" alt="Avatar" className="img-class"/>
+                                                    <div className="centered">CLIENT LOCATION</div>
+                                                </div>
+                                            </div>
+                                        <div className="flip-card-back mdl-grid">
+                                            <div className="mdl-grid">
+                                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/existing")} >
+                                                    Existing Connection
+                                                </button>
+                                            </div>
+                                            <div className="mdl-grid">
+                                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/new")} >
+                                                    New Connection
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
                                     </div>
                                     <div className="mdl-cell mdl-cell--4-col">
-                                        <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" >
-                                                    Client Location
-                                        </button>
+                                        
+                                    <div className="flip-card">
+                                        <div className="flip-card-inner">
+                                            <div className="flip-card-front">
+                                                <div className="container">
+                                                    <img src="client.jpg" alt="Avatar" className="img-class"/>
+                                                    <div className="centered">ONSHORE POP LOCATION</div>
+                                                </div>
+                                            </div>
+                                        <div className="flip-card-back mdl-grid">
+                                            <div className="mdl-grid">
+                                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/existing")} >
+                                                    Existing Connection
+                                                </button>
+                                            </div>
+                                            <div className="mdl-grid">
+                                                <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onClick={() => this.formRedirectPage("/input/new")} >
+                                                    New Connection
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
                                     </div>
                                 </div>
                                 <div className="mdl-grid">

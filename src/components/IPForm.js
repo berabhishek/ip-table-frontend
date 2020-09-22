@@ -81,12 +81,12 @@ class IPForm extends React.Component {
         this.anyEntryChanged();
     }
 
-    showSnack(success){
+    showSnack(success , errMsg){
         let message = "";
         if(success) {
             message = "Form is valid!";
         } else {
-            message = 'Invalid form data, Please check the values';
+            message = errMsg;
         }
         var notification = document.querySelector('.mdl-js-snackbar');
         var data = {
@@ -102,20 +102,30 @@ class IPForm extends React.Component {
         let projectname = document.getElementById("projectname").value;
         let projectid = document.getElementById("projectid").value;
         let vrfname_selected = document.getElementById("vrfname").value;
+        let msg = "Inavlid Form Data";
         let data = {};
-        if(this.props.match.params.existing === "new") {
-            data = this.apiConnector.fetchData(`/formhelper/validateany/${projectname}/${projectid}/${vrfname_selected}`);
+        if(projectname === "") {
+            msg = "Project Name Is Empty";
+        } else if(projectid === "") {
+            msg = "Project Id Is Empty";
+        } else if(vrfname_selected === "") {
+            msg = "VRF Name Is Empty";
         } else {
-            data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
+
+            if(this.props.match.params.existing === "new") {
+                data = this.apiConnector.fetchData(`/formhelper/validateany/${projectname}/${projectid}/${vrfname_selected}`);
+            } else {
+                data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
+            }
         }
-        if(data && data.valid) {
-            this.setState((prevState, props) => {
-                prevState.submit_disable = false;
-                return prevState;
+            if(data && data.valid) {
+                this.setState((prevState, props) => {
+                    prevState.submit_disable = false;
+                    return prevState;
             });
                 this.showSnack(true);
             } else {
-                this.showSnack(false);
+                this.showSnack(false , msg);
             }
     }
     submitForm() {
