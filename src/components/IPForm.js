@@ -21,6 +21,8 @@ class IPForm extends React.Component {
             device2: [],
             devices: ["device1", "device2"],
             vrfname: [],
+            vlans: [],
+            subnets: []
         }
         this.apiConnector = new ApiConnector();
     }
@@ -97,6 +99,26 @@ class IPForm extends React.Component {
         };
         notification.MaterialSnackbar.showSnackbar(data);
     }
+    updateFacility() {
+        for(let i=1; i< 5;i++) {
+            this.updateConnections(i);
+        }
+    }
+    updateConnections(rowIndex) {
+        let device1 = document.getElementById(`device1_${rowIndex}`).value;
+        let device2 = document.getElementById(`device2_${rowIndex}`).value;
+        let facility = document.getElementById("facility").value;
+        if(device1 !== "" && device2 !== "" && facility !== "")  {
+            let data = this.apiConnector.fetchData(`/formhelper/connections/${device1}/${device2}/${facility}`);
+            let subnet  = data && data.subnet ? data.subnet: "";
+            let vlan = data && data.vlan ? data.vlan : "";
+            this.setState((prevState, props)=> {
+                prevState.subnets[rowIndex-1] = subnet;
+                prevState.vlans[rowIndex-1] = vlan;
+                return prevState;
+            });
+        }
+    }
 
     validateForm() {
         let projectname = document.getElementById("projectname").value;
@@ -111,7 +133,6 @@ class IPForm extends React.Component {
         } else if(vrfname_selected === "") {
             msg = "VRF Name Is Empty";
         } else {
-
             if(this.props.match.params.existing === "new") {
                 data = this.apiConnector.fetchData(`/formhelper/validateany/${projectname}/${projectid}/${vrfname_selected}`);
             } else {
@@ -175,15 +196,12 @@ class IPForm extends React.Component {
     render() {
         return (
             <div>
-      <Header title="Input Data - PD VRF Extension on Shared Infrastructure"/>
+                <Header title="Input Data - PD VRF Extension on Shared Infrastructure"/>
                 <form id="ipform">
                     <div className="mdl-grid">
                         <div className="mdl-cell mdl-cell--1-col"></div>
                         <div className="mdl-cell mdl-cell--10-col">
                             <div className="mdl-card ip-full-width mdl-shadow--2dp">
-                                {/* <div className="mdl-card__title">
-                                    <h2 className="mdl-card__title-text">{this.props.title}</h2>
-                                </div> */}
                                 <div className="mdl-card__supporting-text ip-full-width no-padding">
                                     <div className="mdl-grid less-height">
                                         <div className="mdl-cell mdl-cell--2-col">
@@ -196,7 +214,7 @@ class IPForm extends React.Component {
                                             <DropDown id="city" name="city" title="City" values={this.state.state} anyEntryChanged={this.findOffice.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="facility" name="facility" title="Facility" values={this.state.office} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <DropDown id="facility" name="facility" title="Facility" values={this.state.office} anyEntryChanged={this.updateFacility.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--2-col">
                                             <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connectiontype} anyEntryChanged={this.updateDevices.bind(this)} />
@@ -221,7 +239,15 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid">
                                         <div className="mdl-cell mdl-cell--12-col">
-                                            <TableElement headers={["Device 1", "Device 2", "VLAN", "Subnet", "Enter Value"]} device1={this.state.device1} device2={this.state.device2} anyEntryChanged={this.anyEntryChanged.bind(this)} />
+                                            <TableElement 
+                                                headers={["Device 1", "Device 2", "VLAN", "Subnet", "Enter Value"]} 
+                                                device1={this.state.device1} 
+                                                device2={this.state.device2} 
+                                                vlans={this.state.vlans} 
+                                                subnets={this.state.subnets} 
+                                                anyEntryChanged={this.anyEntryChanged.bind(this)}
+                                                updateConnections={this.updateConnections.bind(this)}
+                                            />
                                         </div>
                                     </div>
                                 </div>
