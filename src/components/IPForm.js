@@ -52,7 +52,7 @@ class IPForm extends React.Component {
                 for(var i=0; i,data.length; i++){
                     states.push(data[i].name)
                 }
-                prevState.state = data.state;
+                prevState.state = data.states;
                 prevState.selected_country = country;
             }
             return prevState;
