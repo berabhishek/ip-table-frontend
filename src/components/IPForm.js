@@ -45,14 +45,14 @@ class IPForm extends React.Component {
 
     findState(country) {
         this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData(`/formhelper/state/${country}`);
+            let data = this.apiConnector.fetchData(`/formhelper/city/${country}`);
             if (data) {
-                data.state.unshift("");
+                //data.state.unshift("");
                 let states = [""]
-                for(var i=0; i,data.length; i++){
-                    states.push(data[i].name)
+                for(var i=0; i<data.length; i++){
+                    states.push(data[i].name);
                 }
-                prevState.state = data.states;
+                prevState.state = states;
                 prevState.selected_country = country;
             }
             return prevState;
@@ -60,13 +60,16 @@ class IPForm extends React.Component {
         this.anyEntryChanged();
     }
 
-    findOffice(state) {
+    findOffice(city) {
         this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData(`/formhelper/office/${state}`);
-            if (data && data.office) {
-                data.office.unshift("");
-                prevState.office = data.office;
-                prevState.selected_state = state;
+            let data = this.apiConnector.fetchData(`/formhelper/facility/${city}`);
+            if (data && Array.isArray(data)) {
+                let offices = [""];
+                data.forEach(office => {
+                    offices.push(office.name);
+                });
+                prevState.office = offices;
+                prevState.selected_state = city;
             }
             return prevState;
         });
