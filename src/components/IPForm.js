@@ -44,6 +44,10 @@ class IPForm extends React.Component {
     }
 
     findState(country) {
+        if(typeof country !== "string") {
+            console.error("Expected country to be a string was given ", typeof country);
+            return;
+        }
         this.setState((prevState, props) => {
             let data = this.apiConnector.fetchData(`/formhelper/city/${country}`);
             if (data && Array.isArray(data)) {
@@ -60,6 +64,10 @@ class IPForm extends React.Component {
     }
 
     findOffice(city) {
+        if(typeof city  !== "string") {
+            console.error("City expected string was given", typeof city);
+            return;
+        }
         this.setState((prevState, props) => {
             let data = this.apiConnector.fetchData(`/formhelper/facility/${city}`);
             if (data && Array.isArray(data)) {
