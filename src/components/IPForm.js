@@ -46,8 +46,7 @@ class IPForm extends React.Component {
     findState(country) {
         this.setState((prevState, props) => {
             let data = this.apiConnector.fetchData(`/formhelper/city/${country}`);
-            if (data) {
-                //data.state.unshift("");
+            if (data && Array.isArray(data)) {
                 let states = [""]
                 for(var i=0; i<data.length; i++){
                     states.push(data[i].name);
