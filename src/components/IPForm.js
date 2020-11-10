@@ -200,6 +200,18 @@ class IPForm extends React.Component {
             this.apiConnector.setData("/formhelper/setipdata/existing", data);
         }
     }
+
+    resetForm() {
+        let ids = [
+            'region',
+            'country',
+            'device1_1'
+        ];
+        ids.forEach(element => {
+            document.getElementById(element).value = "";
+        });
+    }
+
     render() {
         return (
             <div>
@@ -263,12 +275,17 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)} type="button">
                                                 Validate
-                                    </button>
+                                            </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>
                                                 Submit
-                                    </button>
+                                            </button>
+                                        </div>
+                                        <div className="mdl-cell mdl-cell--3-col">
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.resetForm.bind(this)}>
+                                                Reset
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
