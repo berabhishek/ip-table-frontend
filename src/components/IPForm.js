@@ -272,6 +272,43 @@ class IPForm extends React.Component {
             this.apiConnector.setData("/formhelper/setipdata/existing", data);
         }
     }
+
+    resetForm() {
+        let ids = [
+            "region",
+            "country",
+            "facility",
+            "city",
+            "connectivitytype",
+            "projectname",
+            "projectid",
+            "vrfname",
+            "device1_1",
+            "device2_1",
+            "vlan_1",
+            "subnet_1",
+            "entervalue_1",
+            "device1_2",
+            "device2_2",
+            "vlan_2",
+            "subnet_2",
+            "entervalue_2",
+            "device1_3",
+            "device2_3",
+            "vlan_3",
+            "subnet_3",
+            "entervalue_3",
+            "device1_4",
+            "device2_4",
+            "vlan_4",
+            "subnet_4",
+            "entervalue_4"
+        ];
+        ids.forEach(element => {
+            document.getElementById(element).value = "";
+        });
+    }
+
     render() {
         return (
             <div>
@@ -335,13 +372,17 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)} type="button">
                                                 Validate
-                                    <button type = 'reset'>Reset</button>
-                                    </button>
+                                                </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>
                                                 Submit
-                                    </button>
+                                            </button>
+                                        </div>
+                                        <div className="mdl-cell mdl-cell--3-col">
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.resetForm.bind(this)}>
+                                                Reset
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
