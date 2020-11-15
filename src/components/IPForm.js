@@ -30,17 +30,18 @@ class IPForm extends React.Component {
         this.ipHelper = new IPHelper();
     }
     componentDidMount() {
+        debugger
         let keys = ["connection", "region"];
         keys.forEach(key => {
             this.setState((prevState, props) => {
             let values = this.ipHelper.formatData(`/formhelper/${key}`);
-            prevState[key] = values; //values  = ["shared", "pd vrf"]
+            prevState[key] = values;
             return prevState;
             });
         });
         this.setState((prevState, props) => {
             let values = this.apiConnector.fetchData(`/formhelper/vrfname`);
-            prevState["vrfname"] = values; //values  = ["shared", "pd vrf"]
+            prevState["vrfname"] = values;
             return prevState;
         });
     }
@@ -65,17 +66,14 @@ class IPForm extends React.Component {
     }
 
     findState(country) {
-        
         if(typeof country !== "string") {
             console.error("Expected country to be a string was given ", typeof country);
             return;
         }
         this.setState((prevState, props) => {
-            
             let states = this.ipHelper.formatData(`/formhelper/city/${country}`);
             prevState.state = states;
             prevState.selected_country = country;
-            
             return prevState;
         });
         this.anyEntryChanged();
@@ -90,7 +88,6 @@ class IPForm extends React.Component {
             return;
         }
         this.setState((prevState, props) => {
-            
             let offices = this.ipHelper.formatData(`/formhelper/facility/${city}`)
             prevState.office = offices;
             prevState.selected_state = city;
@@ -139,11 +136,8 @@ class IPForm extends React.Component {
     updateDevices(name) {
         this.setState((prevState, props) => {
             this.state.devices.forEach(device => {
-
                 let values = this.ipHelper.formatData(`/formhelper/${device}/${name}`)
-                
                 prevState[device] = values;
-            
                 return prevState;
             });
         });
@@ -273,6 +267,29 @@ class IPForm extends React.Component {
         }
     }
 
+    deleteData(){
+     let ids = [
+        "vlan_1",
+        "subnet_1",
+        "entervalue_1",
+        "device1_2",
+        "device2_2",
+        "vlan_2",
+        "subnet_2",
+        "entervalue_2",
+        "device1_3",
+        "device2_3",
+        "vlan_3",
+        "subnet_3",
+        "entervalue_3",
+        "device1_4",
+        "device2_4",
+        "vlan_4",
+        "subnet_4",
+        "entervalue_4"
+     ];   
+    }
+
     resetForm() {
         let ids = [
             "region",
@@ -377,11 +394,16 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>
                                                 Submit
-                                            </button>
+                                    </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.resetForm.bind(this)}>
                                                 Reset
+                                            </button>
+                                        </div>
+                                        <div className="mdl-cell mdl-cell--3-col">
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.deleteData.bind(this)}>
+                                                Release
                                             </button>
                                         </div>
                                     </div>

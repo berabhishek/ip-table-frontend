@@ -1,11 +1,12 @@
 import React from "react";
 
 class DropDown extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
+        try {
+            this.props.values.map((value) => {})
+        } catch(err) {
+            debugger;
+        }
         return (
             <div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
