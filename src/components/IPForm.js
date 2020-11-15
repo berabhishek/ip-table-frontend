@@ -30,17 +30,39 @@ class IPForm extends React.Component {
         this.ipHelper = new IPHelper();
     }
     componentDidMount() {
-        let keys = ["connection", "vrfname", "region"];
+        debugger
+        let keys = ["connection", "region"];
         keys.forEach(key => {
             this.setState((prevState, props) => {
             let values = this.ipHelper.formatData(`/formhelper/${key}`);
-            prevState[key] = values; //values  = ["shared", "pd vrf"]
+            prevState[key] = values;
             return prevState;
             });
+        });
+        this.setState((prevState, props) => {
+            let values = this.apiConnector.fetchData(`/formhelper/vrfname`);
+            prevState["vrfname"] = values;
+            return prevState;
         });
     }
     anyEntryChanged() {
         this.setState({ submit_disable: true });
+    }
+
+    findCountry(region) {
+        
+        if(typeof region !== "string") {
+            console.error("Expected region to be string was given ", typeof region);
+            return;
+        }
+        this.setState((prevState, props) => {
+            let countries = this.ipHelper.formatData(`/formhelper/country/${region}`);
+            prevState.country = countries;
+            prevState.selected_region = region;
+            
+            return prevState;
+        });
+        this.anyEntryChanged();
     }
 
     findState(country) {
@@ -52,11 +74,13 @@ class IPForm extends React.Component {
             let states = this.ipHelper.formatData(`/formhelper/city/${country}`);
             prevState.state = states;
             prevState.selected_country = country;
-            
             return prevState;
         });
         this.anyEntryChanged();
     }
+
+    
+
 
     findOffice(city) {
         if(typeof city  !== "string") {
@@ -71,7 +95,44 @@ class IPForm extends React.Component {
         });
         this.anyEntryChanged();
     }
+//on connection change - update device and 
+    onConnectivityTypeChanged(name) {
+        this.updateDevices(name);
+        if(name === "Shared Infrastructure") {
+            this.getFreeVlans();
+            
+        }
+    }
 
+    getFreeVlans() {
+        this.setState((prevState, props) => {
+            let facility = document.getElementById("facility").value;
+            if(facility === "") {
+                console.error("Faciltiy is empty");
+                return prevState;
+            }
+            let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
+            prevState.vlans.length = 4;
+            prevState.vlans_store = vlans;
+            
+            return prevState;
+        });
+    }
+    getChildSubnets(){
+        this.setState((prevState, props) => {
+            let facility = document.getElementById("facility").value;
+            if(facility === "") {
+                console.error("Facility is empty");
+                return prevState;
+            }
+            let parentsubnet = this.apiConnector.fetchData(`/formhelper/parentsubnet/${facility}`)
+            let subnets = this.ipHelper.formatData(`/formhelper/subnet/${parentsubnet.parentsubnet}`, 'subnetchild')
+            prevState.subnets.length = 4;
+            prevState.subnets_store = subnets;
+
+            return prevState;
+        });
+    }
     updateDevices(name) {
         this.setState((prevState, props) => {
             this.state.devices.forEach(device => {
@@ -103,6 +164,7 @@ class IPForm extends React.Component {
         for(let i=1; i< 5;i++) {
             this.updateConnections(i);
         }
+        this.getChildSubnets();
     }
     updateConnections(rowIndex) {
         let device1 = document.getElementById(`device1_${rowIndex}`).value;
@@ -110,11 +172,22 @@ class IPForm extends React.Component {
         let facility = document.getElementById("facility").value;
         if(device1 !== "" && device2 !== "" && facility !== "")  {
             let data = this.apiConnector.fetchData(`/formhelper/connections/${device1}/${device2}/${facility}`);
-            let subnet  = data && data.subnet ? data.subnet: "";
-            let vlan = data && data.vlan ? data.vlan : "";
+
+            // let subnet  = data && data.subnet ? data.subnet: "";
+            // let vlan = data && data.vlan ? data.vlan : "";
             this.setState((prevState, props)=> {
-                prevState.subnets[rowIndex-1] = subnet;
-                prevState.vlans[rowIndex-1] = vlan;
+                // prevState.subnets[rowIndex-1] = subnet;
+                // prevState.vlans[rowIndex-1] = vlan;
+                prevState.vlans[rowIndex-1] = prevState.vlans_store[rowIndex-1];
+                prevState.subnets[rowIndex-1] = prevState.subnets_store[rowIndex-1];
+                return prevState;
+            });
+        } else {
+            this.setState((prevState, props)=> {
+                // prevState.subnets[rowIndex-1] = subnet;
+                // prevState.vlans[rowIndex-1] = vlan;
+                prevState.vlans[rowIndex-1] = "";
+                prevState.subnets[rowIndex-1] = "";
                 return prevState;
             });
         }
@@ -124,7 +197,7 @@ class IPForm extends React.Component {
         let projectname = document.getElementById("projectname").value;
         let projectid = document.getElementById("projectid").value;
         let vrfname_selected = document.getElementById("vrfname").value;
-        let msg = "Inavlid Form Data";
+        let msg = "Invalid Form Data";
         let data = {};
         if(projectname === "") {
             msg = "Project Name Is Empty";
@@ -139,7 +212,7 @@ class IPForm extends React.Component {
                 data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
             }
         }
-            if(data && data.valid) {
+            if(data && data.valid) {//check data is valid 
                 this.setState((prevState, props) => {
                     prevState.submit_disable = false;
                     return prevState;
@@ -265,7 +338,7 @@ class IPForm extends React.Component {
                                 <div className="mdl-card__supporting-text ip-full-width no-padding">
                                     <div className="mdl-grid less-height">
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="region" name="region" title="Region" values={this.state.region} anyEntryChanged={this.findOffice.bind(this)} />
+                                            <DropDown id="region" name="region" title="Region" values={this.state.region} anyEntryChanged={this.findCountry.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <DropDown id="country" name="country" title="Country" values={this.state.country} anyEntryChanged={this.findState.bind(this)} />
@@ -277,7 +350,7 @@ class IPForm extends React.Component {
                                             <DropDown id="facility" name="facility" title="Facility" values={this.state.office} anyEntryChanged={this.updateFacility.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connection} anyEntryChanged={this.updateDevices.bind(this)} />
+                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connection} anyEntryChanged={this.onConnectivityTypeChanged.bind(this)} />
                                         </div>
                                     </div>
                                     <div className="mdl-grid less-height">
@@ -316,7 +389,7 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)} type="button">
                                                 Validate
-                                    </button>
+                                                </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>

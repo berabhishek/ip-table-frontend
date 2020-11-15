@@ -13,7 +13,8 @@ class ApiConnector {
             async: false,
             dataType: 'json',
             success: function(result) {
-                // console.log(result.message)
+                console.error(result)
+
             }
         });
         return data.responseJSON;
