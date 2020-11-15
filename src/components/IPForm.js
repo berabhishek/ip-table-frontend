@@ -111,6 +111,7 @@ class IPForm extends React.Component {
                 return prevState;
             }
             let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
+            debugger;
             prevState.vlans.length = 4;
             prevState.vlans_store = vlans;
             
@@ -170,7 +171,7 @@ class IPForm extends React.Component {
         let device2 = document.getElementById(`device2_${rowIndex}`).value;
         let facility = document.getElementById("facility").value;
         if(device1 !== "" && device2 !== "" && facility !== "")  {
-            let data = this.apiConnector.fetchData(`/formhelper/connections/${device1}/${device2}/${facility}`);
+            // let data = this.apiConnector.fetchData(`/formhelper/connections/${device1}/${device2}/${facility}`);
 
             // let subnet  = data && data.subnet ? data.subnet: "";
             // let vlan = data && data.vlan ? data.vlan : "";
