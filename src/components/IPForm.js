@@ -267,29 +267,6 @@ class IPForm extends React.Component {
         }
     }
 
-    deleteData(){
-     let ids = [
-        "vlan_1",
-        "subnet_1",
-        "entervalue_1",
-        "device1_2",
-        "device2_2",
-        "vlan_2",
-        "subnet_2",
-        "entervalue_2",
-        "device1_3",
-        "device2_3",
-        "vlan_3",
-        "subnet_3",
-        "entervalue_3",
-        "device1_4",
-        "device2_4",
-        "vlan_4",
-        "subnet_4",
-        "entervalue_4"
-     ];   
-    }
-
     resetForm() {
         let ids = [
             "region",
@@ -324,6 +301,15 @@ class IPForm extends React.Component {
         ids.forEach(element => {
             document.getElementById(element).value = "";
         });
+    }
+
+    releaseForm() {
+        let projectid = document.getElementById("projectid").value;
+        let facility = document.getElementById("facility").value;
+        let vrfname = document.getElementById("vrfname").value;
+        let projectname = document.getElementById("projectname").value;
+        this.apiConnector.deleteData(`/formhelper/cleariptable/${projectname}/${projectid}/${vrfname}/${facility}`);
+        this.resetForm();
     }
 
     render() {
@@ -402,7 +388,7 @@ class IPForm extends React.Component {
                                             </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
-                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.deleteData.bind(this)}>
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.releaseForm.bind(this)}>
                                                 Release
                                             </button>
                                         </div>
