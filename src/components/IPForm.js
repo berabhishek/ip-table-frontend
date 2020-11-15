@@ -5,6 +5,7 @@ import InputText from "./form_components/InputText";
 import TableElement from "./form_components/TableElement";
 import ApiConnector from "../connector/ApiConnector";
 import Header from "./Header";
+import IPHelper from "../IPHelper";
 class IPForm extends React.Component {
     constructor(props) {
         super(props);
@@ -16,26 +17,25 @@ class IPForm extends React.Component {
             selected_state: "",
             office: [""],
             selected_office: "",
-            connectiontype: [],
+            connection: [],
             device1: [],
             device2: [],
             devices: ["device1", "device2"],
             vrfname: [],
             vlans: [],
-            subnets: []
+            subnets: [],
+            region: [],
         }
         this.apiConnector = new ApiConnector();
+        this.ipHelper = new IPHelper();
     }
     componentDidMount() {
-        let keys = ["connectiontype", "vrfname"];
+        let keys = ["connection", "vrfname", "region"];
         keys.forEach(key => {
-                this.setState((prevState, props) => {
-                let data = this.apiConnector.fetchData(`/formhelper/${key}`);
-                if (data && data[key]) {
-                    data[key].unshift("");
-                    prevState[key] = data[key];
-                }
-                return prevState;
+            this.setState((prevState, props) => {
+            let values = this.ipHelper.formatData(`/formhelper/${key}`);
+            prevState[key] = values; //values  = ["shared", "pd vrf"]
+            return prevState;
             });
         });
     }
@@ -44,33 +44,29 @@ class IPForm extends React.Component {
     }
 
     findState(country) {
+        if(typeof country !== "string") {
+            console.error("Expected country to be a string was given ", typeof country);
+            return;
+        }
         this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData(`/formhelper/city/${country}`);
-            if (data) {
-                //data.state.unshift("");
-                let states = [""]
-                for(var i=0; i<data.length; i++){
-                    states.push(data[i].name);
-                }
-                prevState.state = states;
-                prevState.selected_country = country;
-            }
+            let states = this.ipHelper.formatData(`/formhelper/city/${country}`);
+            prevState.state = states;
+            prevState.selected_country = country;
+            
             return prevState;
         });
         this.anyEntryChanged();
     }
 
     findOffice(city) {
+        if(typeof city  !== "string") {
+            console.error("City expected string was given", typeof city);
+            return;
+        }
         this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData(`/formhelper/facility/${city}`);
-            if (data && Array.isArray(data)) {
-                let offices = [""];
-                data.forEach(office => {
-                    offices.push(office.name);
-                });
-                prevState.office = offices;
-                prevState.selected_state = city;
-            }
+            let offices = this.ipHelper.formatData(`/formhelper/facility/${city}`)
+            prevState.office = offices;
+            prevState.selected_state = city;
             return prevState;
         });
         this.anyEntryChanged();
@@ -79,11 +75,8 @@ class IPForm extends React.Component {
     updateDevices(name) {
         this.setState((prevState, props) => {
             this.state.devices.forEach(device => {
-                let data = this.apiConnector.fetchData(`/formhelper/device/${device}/${name}`);
-                if (data && data.name) {
-                    data.name.unshift("");
-                    prevState[device] = data.name;
-                }
+                let values = this.ipHelper.formatData(`/formhelper/${device}/${name}`)
+                prevState[device] = values;
                 return prevState;
             });
         });
@@ -201,6 +194,29 @@ class IPForm extends React.Component {
         }
     }
 
+    deleteData(){
+     let ids = [
+        "vlan_1",
+        "subnet_1",
+        "entervalue_1",
+        "device1_2",
+        "device2_2",
+        "vlan_2",
+        "subnet_2",
+        "entervalue_2",
+        "device1_3",
+        "device2_3",
+        "vlan_3",
+        "subnet_3",
+        "entervalue_3",
+        "device1_4",
+        "device2_4",
+        "vlan_4",
+        "subnet_4",
+        "entervalue_4"
+     ];   
+    }
+
     resetForm() {
         let ids = [
             "region",
@@ -249,7 +265,7 @@ class IPForm extends React.Component {
                                 <div className="mdl-card__supporting-text ip-full-width no-padding">
                                     <div className="mdl-grid less-height">
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="region" name="region" title="Region" values={["APAC", "BPAC"]} anyEntryChanged={this.findOffice.bind(this)} />
+                                            <DropDown id="region" name="region" title="Region" values={this.state.region} anyEntryChanged={this.findOffice.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <DropDown id="country" name="country" title="Country" values={this.state.country} anyEntryChanged={this.findState.bind(this)} />
@@ -261,7 +277,7 @@ class IPForm extends React.Component {
                                             <DropDown id="facility" name="facility" title="Facility" values={this.state.office} anyEntryChanged={this.updateFacility.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connectiontype} anyEntryChanged={this.updateDevices.bind(this)} />
+                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connection} anyEntryChanged={this.updateDevices.bind(this)} />
                                         </div>
                                     </div>
                                     <div className="mdl-grid less-height">
@@ -300,16 +316,21 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)} type="button">
                                                 Validate
-                                            </button>
+                                    </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>
                                                 Submit
-                                            </button>
+                                    </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.resetForm.bind(this)}>
                                                 Reset
+                                            </button>
+                                        </div>
+                                        <div className="mdl-cell mdl-cell--3-col">
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.deleteData.bind(this)}>
+                                                Release
                                             </button>
                                         </div>
                                     </div>
