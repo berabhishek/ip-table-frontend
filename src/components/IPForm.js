@@ -30,7 +30,6 @@ class IPForm extends React.Component {
         this.ipHelper = new IPHelper();
     }
     componentDidMount() {
-        debugger
         let keys = ["connection", "region"];
         keys.forEach(key => {
             this.setState((prevState, props) => {
