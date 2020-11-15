@@ -125,7 +125,7 @@ class IPForm extends React.Component {
                 return prevState;
             }
             let parentsubnet = this.apiConnector.fetchData(`/formhelper/parentsubnet/${facility}`)
-            let subnets = this.ipHelper.formatData(`/formhelper/subnet/${parentsubnet.parentsubnet}`, 'subnetchild')
+            let subnets = this.ipHelper.formatData(`/formhelper/subnet/${parentsubnet.parentsubnet}`, 'childsubnet')
             prevState.subnets.length = 4;
             prevState.subnets_store = subnets;
 
