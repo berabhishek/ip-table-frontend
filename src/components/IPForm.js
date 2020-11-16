@@ -298,9 +298,11 @@ class IPForm extends React.Component {
             "subnet_4",
             "entervalue_4"
         ];
-        ids.forEach(element => {
-            document.getElementById(element).value = "";
-        });
+        document.getElementById("ipform").reset();
+        // ids.forEach(element => {
+        //     console.log(element);
+        //     document.getElementById(element).value = "";
+        // });
     }
 
     releaseForm() {

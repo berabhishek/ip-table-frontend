@@ -111,7 +111,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_4" text="" anyEntryChanged={this.props.updateConnections} disabled value={this.props.subnets[3]}/>
       </td>
       <td>
-        <DropDown id="entervalue_4" name="entervalue_4" title="" values={["/29", "/30"]} anyEntryChanged={this.props.updateConnections}/>
+        <DropDown id="entervalue_4" name="entervalue_4" title="" values={["/29", "/30"]} anyEntryChanged={()=> this.props.updateConnections(4)}/>
       </td>
     </tr>
   </tbody>
