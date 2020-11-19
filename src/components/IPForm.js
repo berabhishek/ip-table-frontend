@@ -111,7 +111,6 @@ class IPForm extends React.Component {
                 return prevState;
             }
             let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
-            debugger;
             prevState.vlans.length = 4;
             prevState.vlans_store = vlans;
             
@@ -180,6 +179,7 @@ class IPForm extends React.Component {
                 // prevState.vlans[rowIndex-1] = vlan;
                 prevState.vlans[rowIndex-1] = prevState.vlans_store[rowIndex-1];
                 prevState.subnets[rowIndex-1] = prevState.subnets_store[rowIndex-1];
+                debugger
                 return prevState;
             });
         } else {
@@ -300,7 +300,6 @@ class IPForm extends React.Component {
         ];
         document.getElementById("ipform").reset();
         // ids.forEach(element => {
-        //     console.log(element);
         //     document.getElementById(element).value = "";
         // });
     }
