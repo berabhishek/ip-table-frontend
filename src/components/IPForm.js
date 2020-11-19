@@ -287,39 +287,7 @@ class IPForm extends React.Component {
     }
 
     resetForm() {
-        let ids = [
-            "region",
-            "country",
-            "facility",
-            "city",
-            "connectivitytype",
-            "projectname",
-            "projectid",
-            "vrfname",
-            "device1_1",
-            "device2_1",
-            "vlan_1",
-            "subnet_1",
-            "entervalue_1",
-            "device1_2",
-            "device2_2",
-            "vlan_2",
-            "subnet_2",
-            "entervalue_2",
-            "device1_3",
-            "device2_3",
-            "vlan_3",
-            "subnet_3",
-            "entervalue_3",
-            "device1_4",
-            "device2_4",
-            "vlan_4",
-            "subnet_4",
-            "entervalue_4"
-        ];
-        ids.forEach(element => {
-            document.getElementById(element).value = "";
-        });
+        document.getElementById("ipform").reset();
     }
 
     releaseForm() {
