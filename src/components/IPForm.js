@@ -114,24 +114,29 @@ class IPForm extends React.Component {
             let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
             prevState.vlans.length = 4;
             prevState.vlans_store = vlans;
-            
             return prevState;
         });
     }
     getChildSubnets(){
-        this.setState((prevState, props) => {
+        for(let rowIndex = 1; rowIndex < 5; rowIndex++) {
+            let enter_val = document.getElementById(`entervalue_${rowIndex}`).value;
             let facility = document.getElementById("facility").value;
-            if(facility === "") {
-                console.error("Facility is empty");
-                return prevState;
+            let child_subnet = this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+            if(child_subnet) {
+                child_subnet = child_subnet["childsubnet"];
+            } else {
+                child_subnet = "";
             }
-            let parentsubnet = this.apiConnector.fetchData(`/formhelper/parentsubnet/${facility}`)
-            let subnets = this.ipHelper.formatData(`/formhelper/subnet/${parentsubnet.parentsubnet}/28`, 'childsubnet', false)
-            prevState.subnets.length = 4;
-            prevState.subnets_store = subnets;
-
-            return prevState;
-        });
+            this.setState((prevState, props) => {
+                // prevState.subnets[rowIndex-1] = child_subnet;
+                if(typeof prevState.subnets_store === "undefined") {
+                    prevState.subnets_store = [];
+                    prevState.subnets_store.length = 4;
+                }
+                prevState.subnets_store[rowIndex-1] = child_subnet;
+                return prevState;
+            });
+    }
     }
     updateDevices(name) {
         this.setState((prevState, props) => {
@@ -161,31 +166,24 @@ class IPForm extends React.Component {
         notification.MaterialSnackbar.showSnackbar(data);
     }
     updateFacility() {
+        this.getChildSubnets();
+        this.getFreeVlans();
         for(let i=1; i< 5;i++) {
             this.updateConnections(i);
         }
-        this.getChildSubnets();
     }
     updateConnections(rowIndex) {
         let device1 = document.getElementById(`device1_${rowIndex}`).value;
         let device2 = document.getElementById(`device2_${rowIndex}`).value;
         let facility = document.getElementById("facility").value;
         if(device1 !== "" && device2 !== "" && facility !== "")  {
-            // let data = this.apiConnector.fetchData(`/formhelper/connections/${device1}/${device2}/${facility}`);
-
-            // let subnet  = data && data.subnet ? data.subnet: "";
-            // let vlan = data && data.vlan ? data.vlan : "";
             this.setState((prevState, props)=> {
-                // prevState.subnets[rowIndex-1] = subnet;
-                // prevState.vlans[rowIndex-1] = vlan;
-                prevState.vlans[rowIndex-1] = prevState.vlans_store[rowIndex-1];
+                prevState.vlans[rowIndex-1] = prevState.vlans_store[rowIndex-1] ? prevState.vlans_store[rowIndex-1]:  "";
                 prevState.subnets[rowIndex-1] = prevState.subnets_store[rowIndex-1];
                 return prevState;
             });
         } else {
             this.setState((prevState, props)=> {
-                // prevState.subnets[rowIndex-1] = subnet;
-                // prevState.vlans[rowIndex-1] = vlan;
                 prevState.vlans[rowIndex-1] = "";
                 prevState.subnets[rowIndex-1] = "";
                 return prevState;
@@ -195,15 +193,21 @@ class IPForm extends React.Component {
 
     enterValueChanged(rowIndex) {
         let enter_val = document.getElementById(`entervalue_${rowIndex}`).value;
+        let device1 = document.getElementById(`device1_${rowIndex}`).value;
+        let device2 = document.getElementById(`device2_${rowIndex}`).value;
         let facility = document.getElementById("facility").value;
+        
         let child_subnet = this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
-        if(child_subnet !== null) {
+        if(child_subnet) {
             child_subnet = child_subnet["childsubnet"];
         } else {
             child_subnet = "";
         }
         this.setState((prevState, props) => {
-            prevState.subnets[rowIndex-1] = child_subnet;
+            if(device1 !== "" && device2 !== "" && facility !== "") {
+                prevState.subnets[rowIndex-1] = child_subnet;
+            }
+            prevState.subnets_store[rowIndex-1] = child_subnet;
             return prevState;
         });
     }
