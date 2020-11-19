@@ -39,7 +39,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_1" text="" anyEntryChanged={this.props.updateConnections} disabled value={this.props.subnets[0]}/>
       </td>
       <td>
-        <DropDown id="entervalue_1" name="entervalue_1" title="" values={["/29", "/30"]} anyEntryChanged={this.props.updateConnections}/>
+        <DropDown id="entervalue_1" name="entervalue_1" title="" values={this.props.entervaluerange} anyEntryChanged={()=>{this.props.enterValueChanged(1)}}/>
       </td>
     </tr>
     <tr>
@@ -63,7 +63,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_2" text="" anyEntryChanged={this.props.updateConnections} disabled value={this.props.subnets[1]}/>
       </td>
       <td>
-        <DropDown id="entervalue_2" name="entervalue_2" title="" values={["/29", "/30"]} anyEntryChanged={this.props.updateConnections}/>
+        <DropDown id="entervalue_2" name="entervalue_2" title="" values={this.props.entervaluerange} anyEntryChanged={()=>{this.props.enterValueChanged(2)}}/>
       </td>
     </tr>
     <tr>
@@ -87,7 +87,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_3" text="" anyEntryChanged={this.props.updateConnections} disabled value={this.props.subnets[2]}/>
       </td>
       <td>
-        <DropDown id="entervalue_3" name="entervalue_3" title="" values={["/29", "/30"]} anyEntryChanged={this.props.updateConnections}/>
+        <DropDown id="entervalue_3" name="entervalue_3" title="" values={this.props.entervaluerange} anyEntryChanged={()=>{this.props.enterValueChanged(3)}}/>
       </td>
     </tr>
     <tr>
@@ -111,7 +111,7 @@ class TableElement extends React.Component {
         <InputText limitedwidth id="subnet_4" text="" anyEntryChanged={this.props.updateConnections} disabled value={this.props.subnets[3]}/>
       </td>
       <td>
-        <DropDown id="entervalue_4" name="entervalue_4" title="" values={["/29", "/30"]} anyEntryChanged={this.props.updateConnections}/>
+        <DropDown id="entervalue_4" name="entervalue_4" title="" values={this.props.entervaluerange} anyEntryChanged={()=> {this.props.enterValueChanged(4)}}/>
       </td>
     </tr>
   </tbody>

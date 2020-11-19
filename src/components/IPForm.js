@@ -111,7 +111,6 @@ class IPForm extends React.Component {
                 return prevState;
             }
             let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
-            debugger;
             prevState.vlans.length = 4;
             prevState.vlans_store = vlans;
             
@@ -126,7 +125,7 @@ class IPForm extends React.Component {
                 return prevState;
             }
             let parentsubnet = this.apiConnector.fetchData(`/formhelper/parentsubnet/${facility}`)
-            let subnets = this.ipHelper.formatData(`/formhelper/subnet/${parentsubnet.parentsubnet}`, 'childsubnet')
+            let subnets = this.ipHelper.formatData(`/formhelper/subnet/${parentsubnet.parentsubnet}/28`, 'childsubnet')
             prevState.subnets.length = 4;
             prevState.subnets_store = subnets;
 
@@ -191,6 +190,21 @@ class IPForm extends React.Component {
                 return prevState;
             });
         }
+    }
+
+    enterValueChanged(rowIndex) {
+        let enter_val = document.getElementById(`entervalue_${rowIndex}`).value;
+        let facility = document.getElementById("facility").value;
+        let child_subnet = this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+        if(child_subnet !== null) {
+            child_subnet = child_subnet["childsubnet"];
+        } else {
+            child_subnet = "";
+        }
+        this.setState((prevState, props) => {
+            prevState.subnets[rowIndex-1] = child_subnet;
+            return prevState;
+        });
     }
 
     validateForm() {
@@ -364,6 +378,8 @@ class IPForm extends React.Component {
                                                 device2={this.state.device2} 
                                                 vlans={this.state.vlans} 
                                                 subnets={this.state.subnets} 
+                                                entervaluerange={["/28","/29", "/30"]}
+                                                enterValueChanged={this.enterValueChanged.bind(this)}
                                                 anyEntryChanged={this.anyEntryChanged.bind(this)}
                                                 updateConnections={this.updateConnections.bind(this)}
                                             />
