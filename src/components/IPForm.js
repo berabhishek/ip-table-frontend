@@ -40,6 +40,7 @@ class IPForm extends React.Component {
         });
         this.setState((prevState, props) => {
             let values = this.apiConnector.fetchData(`/formhelper/vrfname`);
+            values.unshift("");
             prevState["vrfname"] = values;
             return prevState;
         });
