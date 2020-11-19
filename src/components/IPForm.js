@@ -6,6 +6,7 @@ import TableElement from "./form_components/TableElement";
 import ApiConnector from "../connector/ApiConnector";
 import Header from "./Header";
 import IPHelper from "../IPHelper";
+import $ from "jquery";
 class IPForm extends React.Component {
     constructor(props) {
         super(props);
@@ -288,6 +289,7 @@ class IPForm extends React.Component {
 
     resetForm() {
         document.getElementById("ipform").reset();
+        $(".mdl-textfield").removeClass("is-dirty")
     }
 
     releaseForm() {
