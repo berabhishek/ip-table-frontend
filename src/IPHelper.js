@@ -4,8 +4,11 @@ class IPHelper {
         this.apiConnector = new ApiConnector();
     }
 
-    formatData(endpoint, key = "name") {
-        let values = [""];
+    formatData(endpoint, key = "name", unshiftEmpty = true) {
+        let values = [];
+        if(unshiftEmpty) {
+            values.push("");
+        }
         if(typeof endpoint !== "string") {
             console.error("endpoint expected string got ", typeof endpoint);
             return values;
