@@ -80,9 +80,6 @@ class IPForm extends React.Component {
         this.anyEntryChanged();
     }
 
-    
-
-
     findOffice(city) {
         if(typeof city  !== "string") {
             console.error("City expected string was given", typeof city);
