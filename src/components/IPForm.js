@@ -26,6 +26,7 @@ class IPForm extends React.Component {
             vlans: [],
             subnets: [],
             region: [],
+            subnets_store: []
         }
         this.apiConnector = new ApiConnector();
         this.ipHelper = new IPHelper();
@@ -49,6 +50,7 @@ class IPForm extends React.Component {
             return prevState;
         });
     }
+
     anyEntryChanged() {
         this.setState({ submit_disable: true });
     }
@@ -96,7 +98,8 @@ class IPForm extends React.Component {
         });
         this.anyEntryChanged();
     }
-//on connection change - update device and 
+
+    //on connection change - update device and 
     onConnectivityTypeChanged(name) {
         this.updateDevices(name);
         if(name === "Shared Infrastructure") {
@@ -118,6 +121,7 @@ class IPForm extends React.Component {
             return prevState;
         });
     }
+
     getChildSubnets(){
         for(let rowIndex = 1; rowIndex < 5; rowIndex++) {
             let enter_val = document.getElementById(`entervalue_${rowIndex}`).value;
@@ -139,6 +143,7 @@ class IPForm extends React.Component {
             });
     }
     }
+
     updateDevices(name) {
         this.setState((prevState, props) => {
             this.state.devices.forEach(device => {
@@ -166,6 +171,7 @@ class IPForm extends React.Component {
         };
         notification.MaterialSnackbar.showSnackbar(data);
     }
+
     updateFacility() {
         this.getChildSubnets();
         this.getFreeVlans();
@@ -173,6 +179,7 @@ class IPForm extends React.Component {
             this.updateConnections(i);
         }
     }
+
     updateConnections(rowIndex) {
         let device1 = document.getElementById(`device1_${rowIndex}`).value;
         let device2 = document.getElementById(`device2_${rowIndex}`).value;
@@ -198,7 +205,10 @@ class IPForm extends React.Component {
         let device2 = document.getElementById(`device2_${rowIndex}`).value;
         let facility = document.getElementById("facility").value;
         
-        let child_subnet = this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+        let child_subnet = null;
+        if(facility && enter_val) {
+            this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+        }
         if(child_subnet) {
             child_subnet = child_subnet["childsubnet"];
         } else {
@@ -242,6 +252,7 @@ class IPForm extends React.Component {
                 this.showSnack(false , msg);
             }
     }
+
     submitForm() {
         let data = {};
         let idlist = [
