@@ -7,6 +7,8 @@ import ApiConnector from "../connector/ApiConnector";
 import Header from "./Header";
 import IPHelper from "../IPHelper";
 import $ from "jquery";
+import * as _ from "lodash";
+
 class IPForm extends React.Component {
     constructor(props) {
         super(props);
@@ -115,9 +117,20 @@ class IPForm extends React.Component {
                 console.error("Faciltiy is empty");
                 return prevState;
             }
-            let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
+            let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`);
+            let pick_index = 0;
+            if(!prevState.vlans_store) {
+                prevState.vlans_store = [];
+                prevState.vlans_store.length = 4;
+            }
+            for(let i =0;i<4;i++) {
+                let store_vlan = prevState.vlans_store[i];
+                if(!store_vlan || store_vlan === "") {
+                    prevState.vlans_store[i] = vlans[pick_index];
+                    pick_index += 1;
+                }
+            }
             prevState.vlans.length = 4;
-            prevState.vlans_store = vlans;
             return prevState;
         });
     }
@@ -133,7 +146,6 @@ class IPForm extends React.Component {
                 child_subnet = "";
             }
             this.setState((prevState, props) => {
-                // prevState.subnets[rowIndex-1] = child_subnet;
                 if(typeof prevState.subnets_store === "undefined") {
                     prevState.subnets_store = [];
                     prevState.subnets_store.length = 4;
@@ -207,7 +219,7 @@ class IPForm extends React.Component {
         
         let child_subnet = null;
         if(facility && enter_val) {
-            this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+            child_subnet = this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
         }
         if(child_subnet) {
             child_subnet = child_subnet["childsubnet"];
@@ -312,6 +324,62 @@ class IPForm extends React.Component {
         this.resetForm();
     }
 
+    populateExistingConnects(index, dataObj) {
+        let keys = ["device1", "device2", "vlan", "subnet", "entervalue"];
+        if(typeof index !== "number") {
+            console.error("index expected integer got ", typeof index);
+            return;
+        }
+        if(!dataObj) {
+            console.warn("No data found");
+            keys.forEach(key => {
+                $(`#${key}_${index}`).val("");
+            });
+            return;
+        }
+        keys.forEach(key => {
+            $(`#${key}_${index}`).val(dataObj[key]);
+        });
+
+    }
+
+    _getExistingConnects() {
+        let projectname = $("#projectname").val();
+        let projectid = $("#projectid").val();
+        let vrfname = $("#vrfname").val();
+        let facility = $("#facility").val();
+        if(projectname !== "" && projectid !== "" && vrfname !== "" && facility !== "") {
+            let data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname}`);
+            let op_data;
+            if(data && data.valid) {
+                let existing_connections =  this.apiConnector.fetchData(`/formhelper/getconnect/${projectname}/${projectid}/${vrfname}/${facility}`);
+                if(existing_connections && existing_connections.data) {
+                    op_data = existing_connections["data"];
+                }
+            }
+            for(let i=1;i<5;i++){
+                let connect_obj;
+                if(op_data && op_data[`connect${i}data`]) {
+                    connect_obj = op_data[`connect${i}data`];
+                    if(connect_obj) {
+                        this.setState((prevState, props) => {
+                            prevState.vlans_store[i-1] = connect_obj["vlan"];
+                            prevState.vlans[i-1] = connect_obj["vlan"];
+                            return prevState;
+                        })
+                    }
+                }
+                this.populateExistingConnects(i, connect_obj);
+            }
+            this.getFreeVlans();
+        }
+    }
+
+    onProjectDetailsChanged() {
+        let getExistingConnects = _.debounce(this._getExistingConnects.bind(this), 3000);
+        getExistingConnects();
+    }
+
     render() {
         return (
             <div>
@@ -341,17 +409,17 @@ class IPForm extends React.Component {
                                     </div>
                                     <div className="mdl-grid less-height">
                                         <div className="mdl-cell mdl-cell--4-col">
-                                            <InputText id="projectname" text="Project Name*" key="projectname" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
+                                            <InputText id="projectname" text="Project Name*" key="projectname" anyEntryChanged={this.onProjectDetailsChanged.bind(this)} required />
                                         </div>
                                         <div className="mdl-cell mdl-cell--4-col">
-                                            <InputText id="projectid" text="Project ID*" key="projectid" anyEntryChanged={this.anyEntryChanged.bind(this)} required />
+                                            <InputText id="projectid" text="Project ID*" key="projectid" anyEntryChanged={this.onProjectDetailsChanged.bind(this)} required />
 
                                         </div>
                                         <div className="mdl-cell mdl-cell--4-col">
                                            { this.props.match.params.existing === "existing" ? 
-                                            <DropDown id="vrfname" name="vrfname" title="VRF Name*" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.anyEntryChanged.bind(this)} required/> 
+                                            <DropDown id="vrfname" name="vrfname" title="VRF Name*" key="vrfname" values={this.state.vrfname} anyEntryChanged={this.onProjectDetailsChanged.bind(this)} required/> 
                                             :
-                                            <InputText id="vrfname" name="vrfname" text="VRF Name*" key="vrfname" anyEntryChanged={this.anyEntryChanged.bind(this)} required/> 
+                                            <InputText id="vrfname" name="vrfname" text="VRF Name*" key="vrfname" anyEntryChanged={this.onProjectDetailsChanged.bind(this)} required/> 
                                         }
 
                                         </div>
