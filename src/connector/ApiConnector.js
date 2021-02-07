@@ -13,7 +13,6 @@ class ApiConnector {
             async: false,
             dataType: 'json',
             success: function(result) {
-                // console.log(result.message)
             }
         });
         return data.responseJSON;
@@ -35,6 +34,19 @@ class ApiConnector {
           $.ajax(settings).done(function (response) {
             window.location = "/output/"+response.id;
           });
+    }
+
+    deleteData(extension) {
+        let data = $.ajax({
+            url: this.state.url+extension,
+            async: false,
+            dataType: 'json',
+            method: "DELETE",
+            success: function(result) {
+                console.log(result.message)
+            }
+        });
+        return data.responseJSON;
     }
 }
 export default ApiConnector;

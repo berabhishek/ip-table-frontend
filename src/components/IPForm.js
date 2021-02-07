@@ -5,6 +5,8 @@ import InputText from "./form_components/InputText";
 import TableElement from "./form_components/TableElement";
 import ApiConnector from "../connector/ApiConnector";
 import Header from "./Header";
+import IPHelper from "../IPHelper";
+import $ from "jquery";
 class IPForm extends React.Component {
     constructor(props) {
         super(props);
@@ -16,74 +18,137 @@ class IPForm extends React.Component {
             selected_state: "",
             office: [""],
             selected_office: "",
-            connectiontype: [],
+            connection: [],
             device1: [],
             device2: [],
             devices: ["device1", "device2"],
             vrfname: [],
             vlans: [],
-            subnets: []
+            subnets: [],
+            region: [],
+            subnets_store: []
         }
         this.apiConnector = new ApiConnector();
+        this.ipHelper = new IPHelper();
     }
     componentDidMount() {
-        let keys = ["connectiontype", "vrfname"];
+        let keys = ["connection", "region"];
         keys.forEach(key => {
-                this.setState((prevState, props) => {
-                let data = this.apiConnector.fetchData(`/formhelper/${key}`);
-                if (data && data[key]) {
-                    data[key].unshift("");
-                    prevState[key] = data[key];
-                }
-                return prevState;
+            this.setState((prevState, props) => {
+            let values = this.ipHelper.formatData(`/formhelper/${key}`);
+            prevState[key] = values;
+            return prevState;
             });
         });
+        this.setState((prevState, props) => {
+            let values = this.apiConnector.fetchData(`/formhelper/vrfname`);
+            if(typeof values === "undefined") {
+                values = [];
+            }
+            values.unshift("");
+            prevState["vrfname"] = values;
+            return prevState;
+        });
     }
+
     anyEntryChanged() {
         this.setState({ submit_disable: true });
     }
 
-    findState(country) {
+    findCountry(region) {
+        
+        if(typeof region !== "string") {
+            console.error("Expected region to be string was given ", typeof region);
+            return;
+        }
         this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData(`/formhelper/city/${country}`);
-            if (data) {
-                //data.state.unshift("");
-                let states = [""]
-                for(var i=0; i<data.length; i++){
-                    states.push(data[i].name);
-                }
-                prevState.state = states;
-                prevState.selected_country = country;
-            }
+            let countries = this.ipHelper.formatData(`/formhelper/country/${region}`);
+            prevState.country = countries;
+            prevState.selected_region = region;
+            
+            return prevState;
+        });
+        this.anyEntryChanged();
+    }
+
+    findState(country) {
+        if(typeof country !== "string") {
+            console.error("Expected country to be a string was given ", typeof country);
+            return;
+        }
+        this.setState((prevState, props) => {
+            let states = this.ipHelper.formatData(`/formhelper/city/${country}`);
+            prevState.state = states;
+            prevState.selected_country = country;
             return prevState;
         });
         this.anyEntryChanged();
     }
 
     findOffice(city) {
+        if(typeof city  !== "string") {
+            console.error("City expected string was given", typeof city);
+            return;
+        }
         this.setState((prevState, props) => {
-            let data = this.apiConnector.fetchData(`/formhelper/facility/${city}`);
-            if (data && Array.isArray(data)) {
-                let offices = [""];
-                data.forEach(office => {
-                    offices.push(office.name);
-                });
-                prevState.office = offices;
-                prevState.selected_state = city;
-            }
+            let offices = this.ipHelper.formatData(`/formhelper/facility/${city}`)
+            prevState.office = offices;
+            prevState.selected_state = city;
             return prevState;
         });
         this.anyEntryChanged();
     }
 
+    //on connection change - update device and 
+    onConnectivityTypeChanged(name) {
+        this.updateDevices(name);
+        if(name === "Shared Infrastructure") {
+            this.getFreeVlans();
+            
+        }
+    }
+
+    getFreeVlans() {
+        this.setState((prevState, props) => {
+            let facility = document.getElementById("facility").value;
+            if(facility === "") {
+                console.error("Faciltiy is empty");
+                return prevState;
+            }
+            let vlans = this.apiConnector.fetchData(`/formhelper/get_free_vlans/${facility}`)
+            prevState.vlans.length = 4;
+            prevState.vlans_store = vlans;
+            return prevState;
+        });
+    }
+
+    getChildSubnets(){
+        for(let rowIndex = 1; rowIndex < 5; rowIndex++) {
+            let enter_val = document.getElementById(`entervalue_${rowIndex}`).value;
+            let facility = document.getElementById("facility").value;
+            let child_subnet = this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+            if(child_subnet) {
+                child_subnet = child_subnet["childsubnet"];
+            } else {
+                child_subnet = "";
+            }
+            this.setState((prevState, props) => {
+                // prevState.subnets[rowIndex-1] = child_subnet;
+                if(typeof prevState.subnets_store === "undefined") {
+                    prevState.subnets_store = [];
+                    prevState.subnets_store.length = 4;
+                }
+                prevState.subnets_store[rowIndex-1] = child_subnet;
+                return prevState;
+            });
+    }
+    }
+
     updateDevices(name) {
         this.setState((prevState, props) => {
             this.state.devices.forEach(device => {
-                let data = this.apiConnector.fetchData(`/formhelper/device/${device}/${name}`);
-                if (data && data.name) {
-                    data.name.unshift("");
-                    prevState[device] = data.name;
-                }
+                let values = this.ipHelper.formatData(`/formhelper/${device}/${name}`)
+                prevState[device] = values;
                 return prevState;
             });
         });
@@ -106,32 +171,63 @@ class IPForm extends React.Component {
         };
         notification.MaterialSnackbar.showSnackbar(data);
     }
+
     updateFacility() {
+        this.getChildSubnets();
+        this.getFreeVlans();
         for(let i=1; i< 5;i++) {
             this.updateConnections(i);
         }
     }
+
     updateConnections(rowIndex) {
         let device1 = document.getElementById(`device1_${rowIndex}`).value;
         let device2 = document.getElementById(`device2_${rowIndex}`).value;
         let facility = document.getElementById("facility").value;
         if(device1 !== "" && device2 !== "" && facility !== "")  {
-            let data = this.apiConnector.fetchData(`/formhelper/connections/${device1}/${device2}/${facility}`);
-            let subnet  = data && data.subnet ? data.subnet: "";
-            let vlan = data && data.vlan ? data.vlan : "";
             this.setState((prevState, props)=> {
-                prevState.subnets[rowIndex-1] = subnet;
-                prevState.vlans[rowIndex-1] = vlan;
+                prevState.vlans[rowIndex-1] = prevState.vlans_store[rowIndex-1] ? prevState.vlans_store[rowIndex-1]:  "";
+                prevState.subnets[rowIndex-1] = prevState.subnets_store[rowIndex-1];
+                return prevState;
+            });
+        } else {
+            this.setState((prevState, props)=> {
+                prevState.vlans[rowIndex-1] = "";
+                prevState.subnets[rowIndex-1] = "";
                 return prevState;
             });
         }
+    }
+
+    enterValueChanged(rowIndex) {
+        let enter_val = document.getElementById(`entervalue_${rowIndex}`).value;
+        let device1 = document.getElementById(`device1_${rowIndex}`).value;
+        let device2 = document.getElementById(`device2_${rowIndex}`).value;
+        let facility = document.getElementById("facility").value;
+        
+        let child_subnet = null;
+        if(facility && enter_val) {
+            this.apiConnector.fetchData(`/formhelper/subnetfilter/${facility}/${enter_val.split("/")[1]}`);
+        }
+        if(child_subnet) {
+            child_subnet = child_subnet["childsubnet"];
+        } else {
+            child_subnet = "";
+        }
+        this.setState((prevState, props) => {
+            if(device1 !== "" && device2 !== "" && facility !== "") {
+                prevState.subnets[rowIndex-1] = child_subnet;
+            }
+            prevState.subnets_store[rowIndex-1] = child_subnet;
+            return prevState;
+        });
     }
 
     validateForm() {
         let projectname = document.getElementById("projectname").value;
         let projectid = document.getElementById("projectid").value;
         let vrfname_selected = document.getElementById("vrfname").value;
-        let msg = "Inavlid Form Data";
+        let msg = "Invalid Form Data";
         let data = {};
         if(projectname === "") {
             msg = "Project Name Is Empty";
@@ -146,7 +242,7 @@ class IPForm extends React.Component {
                 data = this.apiConnector.fetchData(`/formhelper/validate/${projectname}/${projectid}/${vrfname_selected}`);
             }
         }
-            if(data && data.valid) {
+            if(data && data.valid) {//check data is valid 
                 this.setState((prevState, props) => {
                     prevState.submit_disable = false;
                     return prevState;
@@ -156,6 +252,7 @@ class IPForm extends React.Component {
                 this.showSnack(false , msg);
             }
     }
+
     submitForm() {
         let data = {};
         let idlist = [
@@ -200,6 +297,21 @@ class IPForm extends React.Component {
             this.apiConnector.setData("/formhelper/setipdata/existing", data);
         }
     }
+
+    resetForm() {
+        document.getElementById("ipform").reset();
+        $(".mdl-textfield").removeClass("is-dirty")
+    }
+
+    releaseForm() {
+        let projectid = document.getElementById("projectid").value;
+        let facility = document.getElementById("facility").value;
+        let vrfname = document.getElementById("vrfname").value;
+        let projectname = document.getElementById("projectname").value;
+        this.apiConnector.deleteData(`/formhelper/cleariptable/${projectname}/${projectid}/${vrfname}/${facility}`);
+        this.resetForm();
+    }
+
     render() {
         return (
             <div>
@@ -212,7 +324,7 @@ class IPForm extends React.Component {
                                 <div className="mdl-card__supporting-text ip-full-width no-padding">
                                     <div className="mdl-grid less-height">
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="region" name="region" title="Region" values={["APAC", "BPAC"]} anyEntryChanged={this.findOffice.bind(this)} />
+                                            <DropDown id="region" name="region" title="Region" values={this.state.region} anyEntryChanged={this.findCountry.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <DropDown id="country" name="country" title="Country" values={this.state.country} anyEntryChanged={this.findState.bind(this)} />
@@ -224,7 +336,7 @@ class IPForm extends React.Component {
                                             <DropDown id="facility" name="facility" title="Facility" values={this.state.office} anyEntryChanged={this.updateFacility.bind(this)} />
                                         </div>
                                         <div className="mdl-cell mdl-cell--2-col">
-                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connectiontype} anyEntryChanged={this.updateDevices.bind(this)} />
+                                            <DropDown id="connectivitytype" name="connectivitytype" title="Connectivity Type" values={this.state.connection} anyEntryChanged={this.onConnectivityTypeChanged.bind(this)} />
                                         </div>
                                     </div>
                                     <div className="mdl-grid less-height">
@@ -252,6 +364,8 @@ class IPForm extends React.Component {
                                                 device2={this.state.device2} 
                                                 vlans={this.state.vlans} 
                                                 subnets={this.state.subnets} 
+                                                entervaluerange={["/28","/29", "/30"]}
+                                                enterValueChanged={this.enterValueChanged.bind(this)}
                                                 anyEntryChanged={this.anyEntryChanged.bind(this)}
                                                 updateConnections={this.updateConnections.bind(this)}
                                             />
@@ -263,12 +377,22 @@ class IPForm extends React.Component {
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button className="mdl-button mdl-js-button mdl-js-ripple-effect" onClick={this.validateForm.bind(this)} type="button">
                                                 Validate
-                                    </button>
+                                                </button>
                                         </div>
                                         <div className="mdl-cell mdl-cell--3-col">
                                             <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" disabled={this.state.submit_disable} onClick={this.submitForm.bind(this)}>
                                                 Submit
                                     </button>
+                                        </div>
+                                        <div className="mdl-cell mdl-cell--3-col">
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.resetForm.bind(this)}>
+                                                Reset
+                                            </button>
+                                        </div>
+                                        <div className="mdl-cell mdl-cell--3-col">
+                                            <button type="button" className="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" onClick={this.releaseForm.bind(this)}>
+                                                Release
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
